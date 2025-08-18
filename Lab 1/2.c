@@ -10,9 +10,9 @@ int main(){
         scanf("%d", & arr[i]);
     }
     int res[n]; res[0] =arr[0];
-    for(int i=i;i<n;++i){
+    printf("%d ", res[0]);
+    for(int i=1;i<n;++i){
        res[i] = res[i-1]+ arr[i];
        printf("%d " , res[i]);
     }
-
 }

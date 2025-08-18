@@ -1,10 +1,10 @@
 #include <stdio.h>
 
-int  dup(int *f){
-    int dup=0;
-   for (int i = 0; i < 1000; i++) {
+int dup(int *f){
+    int dup = 0;
+    for (int i = 0; i < 1000; i++) {
         if (f[i] >= 2){
-            dup = dup + (f[i]/2);
+            dup++;  
         } 
     }
     return dup;
