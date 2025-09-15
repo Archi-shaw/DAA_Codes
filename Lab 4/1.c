@@ -3,9 +3,9 @@
 #include <string.h>
 #include <time.h>
 
-long long comparisons = 0;  
+long long comparisons = 0;
 
-void merge(int arr[], int l, int m, int r) {
+void merge(int arr[], int l, int m, int r, int order) {
     int n1 = m - l + 1;
     int n2 = r - m;
 
@@ -17,7 +17,7 @@ void merge(int arr[], int l, int m, int r) {
 
     while (i < n1 && j < n2) {
         comparisons++;
-        if (L[i] <= R[j]) {
+        if ((order == 1 && L[i] <= R[j]) || (order == 2 && L[i] >= R[j])) {
             arr[k++] = L[i++];
         } else {
             arr[k++] = R[j++];
@@ -28,12 +28,12 @@ void merge(int arr[], int l, int m, int r) {
     while (j < n2) arr[k++] = R[j++];
 }
 
-void mergeSort(int arr[], int l, int r) {
+void mergeSort(int arr[], int l, int r, int order) {
     if (l < r) {
         int m = l + (r - l) / 2;
-        mergeSort(arr, l, m);
-        mergeSort(arr, m + 1, r);
-        merge(arr, l, m, r);
+        mergeSort(arr, l, m, order);
+        mergeSort(arr, m + 1, r, order);
+        merge(arr, l, m, r, order);
     }
 }
 
@@ -70,6 +70,7 @@ int main() {
     int choice, n;
     int arr[600];
     char inputFile[30], outputFile[30];
+    int order = 1;
 
     printf("MAIN MENU (MERGE SORT)\n");
     printf("1. Ascending Data\n");
@@ -83,14 +84,19 @@ int main() {
         case 1:
             strcpy(inputFile, "inAsce.dat");
             strcpy(outputFile, "outMergeAsce.dat");
+            order = 1; 
             break;
         case 2:
             strcpy(inputFile, "inDesc.dat");
             strcpy(outputFile, "outMergeDesc.dat");
+            order = 2; 
             break;
         case 3:
             strcpy(inputFile, "inRand.dat");
             strcpy(outputFile, "outMergeRand.dat");
+            printf("Choose order for Random Data (1 = Ascending, 2 = Descending): ");
+            scanf("%d", &order);
+            if (order != 1 && order != 2) order = 1; 
             break;
         default:
             printf("Exiting...\n");
@@ -106,16 +112,16 @@ int main() {
     struct timespec start, end;
     clock_gettime(CLOCK_MONOTONIC, &start);
 
-    mergeSort(arr, 0, n - 1);
+    mergeSort(arr, 0, n - 1, order);
 
     clock_gettime(CLOCK_MONOTONIC, &end);
 
-    long long timeTaken = (end.tv_sec - start.tv_sec) * 1000000000LL + 
+    long long timeTaken = (end.tv_sec - start.tv_sec) * 1000000000LL +
                           (end.tv_nsec - start.tv_nsec);
 
     writeFile(outputFile, arr, n);
 
-    printf("After Sorting: ");
+    printf("After Sorting (%s): ", (order == 1) ? "Ascending" : "Descending");
     display(arr, n);
 
     printf("Number of Comparisons: %lld\n", comparisons);
